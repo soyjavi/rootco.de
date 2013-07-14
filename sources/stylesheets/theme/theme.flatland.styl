@@ -1,0 +1,54 @@
+@import "../../../components/CSSmethods/vendor.styl"
+
+
+THEME = lighten(#00AFE3, 25%)
+BASE  = #2f2f2f
+COLOR = #fff
+
+DANGER              = #e74c3c
+SUCCESS             = #2ecc71
+WARNING             = #edba22
+
+ARTICLE = darken(BASE, 45%)
+
+body
+  background: BASE
+  color: COLOR
+
+  & > section
+    & article
+      background-color: ARTICLE
+    & footer
+      background-color: darken(ARTICLE, 15%)
+      color: lighten(BASE, 50%)
+
+  & button
+    color: BASE
+    background-color: darken(COLOR, 25%)
+    &:hover, &:active
+      background-color: COLOR
+
+nav[data-control=files]
+  & a
+    &:not(.active)
+      color: lighten(BASE, 55%)
+    &.active
+      background-color: ARTICLE
+      color: THEME
+    &:not(.active)
+      &:hover, &:active
+        color: COLOR
+
+
+nav[data-control=tree]
+  & span
+    &.active
+      background-color: lighten(BASE, 10%) !important
+      color: THEME
+      font-weight: bold
+
+  & abbr, span
+    &:not(.active)
+      &:hover, &:active
+        background-color: lighten(BASE, 5%) !important
+
