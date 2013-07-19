@@ -2,7 +2,7 @@
 html
   head
     meta(charset='utf-8')
-    title Nextflip
+    title Rootco.de
     meta(name='description', content='')
     meta(name='author', content='Javier Jiménez Villar (@soyjavi)')
     meta(name='HandheldFriendly', content='True')
@@ -14,7 +14,7 @@ html
 
     link(rel='stylesheet', href='stylesheets/rootcode.0.0.1.css')
     link(rel='stylesheet', href='stylesheets/rootcode.theme.flatland.css')
-  body
+  body#ide
 
     //- ASIDE
     aside
@@ -51,34 +51,36 @@ html
         button(data-action="aside") .\
         nav(data-control="files")
           a.active(href="#") instructions.md
-      article.first click here to toggle aside
+      article#col-1.first click here to toggle aside
 
-    //- COLUMN-2
-    section.active
-      header
-        nav(data-control="files")
-          a(href="#") .gitignore
-          a.unsaved(href="#") gruntfile.coffee
-          a.active(href="#") pair.coffee
-            img.avatar.speaking(src="images/inigo.jpg")
-            img.avatar(src="images/ina.jpg")
-          a(href="#") package.json
-      article.
-        sum = (a, b) -> a + b
+    //- //- COLUMN-2
+    //- section.active
+    //-   header
+    //-     nav(data-control="files")
+    //-       a(href="#") .gitignore
+    //-       a.unsaved(href="#") gruntfile.coffee
+    //-       a.active(href="#") pair.coffee
+    //-         img.avatar.speaking(src="images/inigo.jpg")
+    //-         img.avatar(src="images/ina.jpg")
+    //-       a(href="#") package.json
+    //-   article#col-2.
+    //-     sum = (a, b) -> a + b
 
-      footer. INSERT MODE, line 71, Column 32
+    //-   footer. INSERT MODE, line 71, Column 32
 
-    //- COLUMN-3
-    section
-      header
-        nav(data-control="files")
-          a.active.unsaved(href="#") style.styl
+    //- //- COLUMN-3
+    //- section
+    //-   header
+    //-     nav(data-control="files")
+    //-       a.active.unsaved(href="#") style.styl
 
-      article.
-        body
-          font-family: "Helvetica Neue"
+    //-   article#col-3.
+    //-     body
+    //-       font-family: "Helvetica Neue"
 
 
 
+    script(src='ace/ace.js')
+    script(src='ace/keybinding-emacs.js')
     script(src='javascripts/rootcode.components.js')
     script(src='javascripts/rootcode.0.0.1.js')

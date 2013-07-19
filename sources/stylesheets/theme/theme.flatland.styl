@@ -18,6 +18,7 @@ body
   & > section
     & article
       background-color: ARTICLE
+      border-top: solid 0.2em ARTICLE
     & footer
       background-color: darken(ARTICLE, 15%)
       color: lighten(BASE, 50%)
@@ -52,3 +53,14 @@ nav[data-control=tree]
       &:hover, &:active
         background-color: lighten(BASE, 5%) !important
 
+
+.ace-monokai
+  background: none !important
+.ace_gutter, .ace_scroller
+  background: ARTICLE !important
+.ace_gutter-active-line, .ace_active-line
+  background: rgba(255,255,255,0.05) !important
+.ace_print-margin, .ace_gutter
+  border-right: dotted 1px BASE !important
+.ace_print-margin
+  background: none !important

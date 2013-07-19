@@ -1,5 +1,7 @@
 class MainCtrl extends Monocle.Controller
 
+  _instance : null
+
   elements:
     "aside"               : "aside"
     "section"             : "sections"
@@ -7,6 +9,16 @@ class MainCtrl extends Monocle.Controller
   events:
     "tap [data-action=aside]" : "onToggleAside"
     "tap [data-control=files] a, article"        : "onFile"
+
+  constructor: ->
+    super
+    # _instance = ace.edit "col-1"
+    # _instance = ace.edit "col-2"
+    # _instance = ace.edit "col-3"
+    # _instance.setTheme "ace/theme/monokai"
+
+    console.error @sections
+    new __View.Column model: a: "1"
 
   onToggleAside: (event) ->
     @aside.toggleClass "active"
