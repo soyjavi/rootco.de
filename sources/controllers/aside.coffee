@@ -1,7 +1,7 @@
 class AsideCtrl extends Monocle.Controller
 
   elements:
-    "div[data-control=tree]": "filesTree"
+    "nav[data-control=tree]": "filesTree"
 
   events:
     "dragover [data-control=fileDrop]": "onFilesDragover"
@@ -30,14 +30,14 @@ class AsideCtrl extends Monocle.Controller
     files.sort()
     for folder in folders
       new __View.TreeFolder model: folder, container: parentNode
-      _handleFolderEntities(folder.createReader(), _readFolder, $$("[data-folder=#{folder.name}]")[0])
+      _handleFolderEntities(
+        folder.createReader(),
+        _readFolder,
+        $$("[data-folder='#{folder.fullPath}/#{folder.name}']")[0]
+      )
+
     for file in files
       new __View.TreeFile model: file, container: parentNode
-
-
-    # new __View.Tree model: {folders: folders, files: files}, container: parentNode
-    # for folder in folders
-    #   _handleFolderEntities(folder.createReader(), _readFolder, $$("[data-folder=#{folder.name}]")[0])
 
   _handleFolderEntities = (directoryReader, callback, parentNode) ->
     entries = []

@@ -33,17 +33,29 @@ nav[data-control="files"]
       //   opacity: 1
 
 
-div[data-control="tree"]
+nav[data-control="tree"]
   padding: 0 0 0.75em 0.75em
   font-size: 0.85em
   overflow: auto
+  vendor(user-select, none)
+  cursor: default
   & nav
     padding-left: 1em
+    &.collapsed
+      display: none
+
   & abbr, & span
     display: block
   & abbr
     font-weight: bold
-  & span
-    text-indent: 0.25em
-    margin-left: 0.75em
+  // & span
+  //   text-indent: 0.25em
+  //   margin-left: 0.75em
+
+
+div[data-control=fileDrop]
+  background-color: red
+  height: 100px
+  border: 5px dashed white
+  border-radius: 10px
 

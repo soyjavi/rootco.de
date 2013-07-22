@@ -10,53 +10,23 @@ class Tree extends Monocle.View
 
 
 class __View.TreeFile extends Tree
+
   events: "doubleTap": "open"
   template: "<span>{{name}}</span>"
+
   open: (event) ->
-    console.error "openFile", @model
+    target = $$(event.target)
+    target.closest("nav[data-control=tree]").find(".active").removeClass("active")
+    target.closest("span").addClass("active")
     @doNothing event
 
 
 class __View.TreeFolder extends Tree
-  events: "tap": "toogle"
-  template: '<abbr data-folder="{{name}}">{{name}}</abbr>'
-  toogle: (event) ->
-    console.error "toogle folder", @model
-    @doNothing event
 
+  events: "tap": "toggle"
+  template: '<abbr>{{name}}</abbr><nav data-folder="{{fullPath}}/{{name}}" class="collapsed"></nav>'
 
-
-
-# class __View.Tree extends Monocle.View
-
-#   events:
-#     "doubleTap span": "openFile"
-#     "tap abbr": "toggleFolder"
-
-#   template: """
-#     <nav>
-#         {{#folders}}
-#         <abbr data-folder="{{name}}">{{name}}</abbr>
-#         {{/folders}}
-#         {{#files}}
-#         <span>{{name}}</span>
-#         {{/files}}
-#     </nav>
-#   """
-
-#   constructor: ->
-#     super
-#     @append @model
-
-#   toggleFolder: (event) ->
-#     _doNothing event
-#     console.error "toggleFolder", @model
-
-#   openFile: (event) ->
-#     _doNothing event
-#     console.error "openFile", @model
-
-#   _doNothing = (event) ->
-#     do event.preventDefault
-#     do event.stopPropagation
-
+  toggle: (event) ->
+    if event.target.nodeName is "ABBR"
+      $$(event.target.nextSibling).toggleClass "collapsed"
+      @doNothing event
