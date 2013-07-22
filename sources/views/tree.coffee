@@ -24,7 +24,7 @@ class __View.TreeFile extends Tree
 class __View.TreeFolder extends Tree
 
   events: "tap": "toggle"
-  template: '<abbr>{{name}}</abbr><nav data-folder="{{fullPath}}/{{name}}" class="collapsed"></nav>'
+  template: '<abbr>{{name}}</abbr><nav data-folder="{{fullPath}}" class="collapsed"></nav>'
 
   toggle: (event) ->
     if event.target.nodeName is "ABBR"
