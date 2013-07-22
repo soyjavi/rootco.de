@@ -13,39 +13,28 @@ class AsideCtrl extends Monocle.Controller
     for item in event.dataTransfer.items
       _readFolder [item.webkitGetAsEntry()], @filesTree[0]
 
-  onFilesDragover: (event) ->
-    _doNothing event
+  onFilesDragover: (event) -> _doNothing event
 
-  onFilesDragenter: (event) ->
-    _doNothing event
+  onFilesDragenter: (event) -> _doNothing event
 
   _readFolder = (entries, parentNode) ->
     files = []
     folders = []
     for entry in entries
-      if entry.isDirectory then folders.push(entry)
-      else if entry.isFile then files.push(entry)
+      if entry.isDirectory
+        new __View.TreeFolder model: entry, container: parentNode
+        parent = document.querySelector "[data-folder='#{entry.fullPath}/#{entry.name}']"
+        _handleFolderEntities entry.createReader(), parent
+      else if entry.isFile
+        new __View.TreeFile model: entry, container: parentNode
 
-    folders.sort()
-    files.sort()
-    for folder in folders
-      new __View.TreeFolder model: folder, container: parentNode
-      _handleFolderEntities(
-        folder.createReader(),
-        _readFolder,
-        $$("[data-folder='#{folder.fullPath}/#{folder.name}']")[0]
-      )
-
-    for file in files
-      new __View.TreeFile model: file, container: parentNode
-
-  _handleFolderEntities = (directoryReader, callback, parentNode) ->
+  _handleFolderEntities = (directoryReader, parentNode) ->
     entries = []
     readEntries = ->
       directoryReader.readEntries (results) ->
         unless results.length
           entries.sort()
-          callback entries, parentNode
+          _readFolder entries, parentNode
         else
           entries = entries.concat(Array::slice.call(results or []), 0)
           do readEntries
@@ -58,14 +47,14 @@ class AsideCtrl extends Monocle.Controller
     false
 
   _fsErrorHandler = (err) ->
-    msg = "An error occured: "
+    msg = "[FS API] An error occured: "
     switch err.code
       when FileError.NOT_FOUND_ERR then       msg += "File or directory not found"
       when FileError.NOT_READABLE_ERR then    msg += "File or directory not readable"
       when FileError.PATH_EXISTS_ERR then     msg += "File or directory already exists"
       when FileError.TYPE_MISMATCH_ERR then   msg += "Invalid filetype"
       else msg += "Unknown Error"
-    console.error "[ERROR] ---> ", msg
+    console.error msg
 
 
 $$ ->
