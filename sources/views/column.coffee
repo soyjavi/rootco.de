@@ -37,4 +37,4 @@ class __View.Column extends Monocle.View
     _ace.setPrintMarginColumn 80
     _ace.setBehavioursEnabled true
     # _ace.setKeyboardHandler require("ace/keyboard/emacs").handler
-    _ace.getSession().setMode "ace/mode/coffeescript"
+    _ace.getSession().setMode "ace/mode/coffee"
