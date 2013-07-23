@@ -1,5 +1,7 @@
 @fileSystem = do ->
 
+  STORAGE_KEY = "rootco.de-localStorage"
+
   IGNORE_FOLDERS = [".git", "node_modules"]
   IGNORE_FILES = [".DS_Store"]
 
@@ -10,17 +12,17 @@
 
   readFile = (file, callback) ->
     cachedObject = CACHED_FILES[file]
-    unless cachedObject.lodaded
+    unless cachedObject.loaded
       entry = cachedObject.entry
       entry.file (file) ->
         reader = new FileReader()
         reader.onloadend = (e) ->
-          cachedObject.lodaded = true
+          cachedObject.loaded = true
           cachedObject.code = this.result
-          callback.call callback, this.result
+          callback.call callback, cachedObject
         reader.readAsText(file)
     else
-      callback.call callback, cachedObject.code
+      callback.call callback, cachedObject
 
   save = (fullPath, code) ->
     CACHED_FILES[fullPath].code = code
@@ -32,8 +34,8 @@
         container = document.querySelector "[data-folder='#{entry.fullPath}']"
         _handleFolderEntities entry.createReader(), container
       else if entry.isFile and entry.name not in IGNORE_FILES
-        CACHED_FILES[entry.fullPath] = {loaded: false, entry: entry, code: ""}
-        new __View.TreeFile model: entry, container: parentNode
+        CACHED_FILES[entry.fullPath] = _createModel entry
+        new __View.TreeFile model: CACHED_FILES[entry.fullPath], container: parentNode
 
   _handleFolderEntities = (directoryReader, parentNode) ->
     entries = []
@@ -58,6 +60,19 @@
       else msg += "Unknown Error (check chrome security)"
     console.error msg
 
+  _createModel = (entry) ->
+    new __Model.File
+      loaded: false
+      name: entry.name
+      path: entry.fullPath
+      extension: entry.name.split(".").slice(-1)[0]
+      entry: entry
+      code: ""
+
+
+  # do ->
+  #   saveCache = -> Device.Storage.local STORAGE_KEY, {files: CACHED_FILES}
+  #   setInterval saveCache, 10000
 
 
 

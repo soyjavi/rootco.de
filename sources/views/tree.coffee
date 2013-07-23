@@ -18,17 +18,14 @@ class __View.TreeFile extends Tree
     target = $$(event.target)
     target.closest("nav[data-control=tree]").find(".active").removeClass("active")
     target.closest("span").addClass("active")
-    console.debug @model.fullPath
-    fileSystem.readFile @model.fullPath, (code) ->
-      console.error "Code -->", code
-
+    fileSystem.readFile @model.path, __Controller.Main.onFileLoad
     @doNothing event
 
 
 class __View.TreeFolder extends Tree
 
   events: "tap": "toggle"
-  template: '<abbr>{{name}}</abbr><nav data-folder="{{fullPath}}" class="collapsed"></nav>'
+  template: """<abbr>{{name}}</abbr><nav data-folder="{{fullPath}}" class="collapsed"></nav>"""
 
   toggle: (event) ->
     if event.target.nodeName is "ABBR"

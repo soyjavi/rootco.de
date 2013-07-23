@@ -1,6 +1,7 @@
 class MainCtrl extends Monocle.Controller
 
-  _instance : null
+  _instance: null
+  _sections: []
   _currentSection: null
 
   elements:
@@ -13,12 +14,16 @@ class MainCtrl extends Monocle.Controller
 
   constructor: ->
     super
+    __Model.File.bind "create", @bindFileCreate
     # _instance = ace.edit "col-1"
     # _instance = ace.edit "col-2"
     # _instance = ace.edit "col-3"
     # _instance.setTheme "ace/theme/monokai"
     # console.error @sections
     new __View.Column model: a: "1"
+
+  bindFileCreate: (event) ->
+    console.debug "File created"
 
   onToggleAside: (event) ->
     @aside.toggleClass "active"
@@ -28,6 +33,10 @@ class MainCtrl extends Monocle.Controller
     el.addClass("active").siblings().removeClass "active"
     _currentSection = el.parent("section")
     _currentSection.addClass("active").siblings().removeClass "active"
+
+  onFileLoad: (data) ->
+    console.debug "Main -->", data
+
 
 $$ ->
   __Controller.Main = new MainCtrl "body"

@@ -1,3 +1,3 @@
 class __Model.File extends Monocle.Model
 
-  @fields "name", "extension", "route"
+  @fields "loaded", "entry", "name", "extension", "path"
