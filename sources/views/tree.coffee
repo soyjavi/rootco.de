@@ -18,6 +18,10 @@ class __View.TreeFile extends Tree
     target = $$(event.target)
     target.closest("nav[data-control=tree]").find(".active").removeClass("active")
     target.closest("span").addClass("active")
+    console.debug @model.fullPath
+    fileSystem.readFile @model.fullPath, (code) ->
+      console.error "Code -->", code
+
     @doNothing event
 
 
