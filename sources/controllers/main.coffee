@@ -17,11 +17,10 @@ class MainCtrl extends Monocle.Controller
 
   onFileLoad: (fileModel) ->
     _doNothing event
-    @addColumn true unless @_columns.length
-    @_activeColumn.showFile fileModel
+    unless @_columns.length then @addColumn true
+    @_activeColumn.openFile fileModel
 
-  onToggleAside: ->
-    __Controller.Aside.toggle()
+  onToggleAside: -> __Controller.Aside.toggle()
 
   addColumn: (first = false) ->
     @_activeColumn = new __View.Column model: {index: @_columns.length + 1, first: first}

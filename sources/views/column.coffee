@@ -13,14 +13,21 @@ ACE_EXT_LANG =
   "txt"     : "text"
   "xml"     : "xml"
   "rb"      : "ruby"
+  "sh"      : "batchfile"
 
 
 class __View.Column extends Monocle.View
+
+  files: null
+  ace: null
+  article: null
+  nav: null
 
   container: "body"
 
   events:
     "click nav > a" : "_onNavClick"
+    "hold nav > a"  : "_closeFile"
     "click article" : "_onArticleClick"
 
   template: """
@@ -44,14 +51,36 @@ class __View.Column extends Monocle.View
     @article = @el.find "article"
     @_initAce @model.index
 
-  showFile: (file) ->
-    @nav.find("a").removeClass "active"
+  openFile: (file) ->
     file_index = @_getFileIndex file
     if file_index is -1
       @_addFileNav file
       @files.push file
-    else @nav.find("[data-index=file-#{file_index}]").addClass "active"
+      file_index = @files.length - 1
+
+    @_setActiveNav file_index
     @_showFileCode file
+
+  _closeFile: () ->
+    el = Monocle.Dom event.target
+    file_index = el.attr("data-index").replace("file-", "")
+    @files.splice(file_index, 1)
+    el.remove()
+    do @_recalcNavIndexes
+    file = @files[parseInt(file_index, 10)]
+    if file
+      @_setActiveNav file_index
+      @_showFileCode file
+    else
+      @ace.setValue ""
+
+  _recalcNavIndexes: ->
+    i = 0
+    @nav.find("a").each -> @setAttribute "data-index", "file-#{i++}"
+
+  _setActiveNav: (file_index) ->
+    @nav.find("a").removeClass "active"
+    @nav.find("[data-index=file-#{file_index}]").addClass "active"
 
   _getFileIndex: (file_to_search) ->
     i = 0
@@ -90,7 +119,6 @@ class __View.Column extends Monocle.View
     @ace.setBehavioursEnabled true
 
   _setMode: (extension) ->
-    if ACE_EXT_LANG[extension]
-      mode = "ace/mode/#{ACE_EXT_LANG[extension]}"
-      @ace.getSession().setMode mode
-    else console.error "extension/language not defined"
+    language = ACE_EXT_LANG[extension] or "text"
+    mode = "ace/mode/#{language}"
+    @ace.getSession().setMode mode
