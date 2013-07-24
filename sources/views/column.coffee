@@ -72,6 +72,7 @@ class __View.Column extends Monocle.View
       @_setActiveNav file_index
       @_showFileCode file
     else
+      do @_setActiveNav
       @ace.setValue ""
 
   _recalcNavIndexes: ->
@@ -80,7 +81,7 @@ class __View.Column extends Monocle.View
 
   _setActiveNav: (file_index) ->
     @nav.find("a").removeClass "active"
-    @nav.find("[data-index=file-#{file_index}]").addClass "active"
+    if file_index? then @nav.find("[data-index=file-#{file_index}]").addClass "active"
 
   _getFileIndex: (file_to_search) ->
     i = 0
@@ -96,7 +97,8 @@ class __View.Column extends Monocle.View
   _showFileCode: (file) ->
     @ace.setValue file.code
     @_setMode file.extension
-    @article.addClass "ace_focus"
+    @ace.clearSelection()
+    do __Controller.Aside.hide
 
   _onNavClick: (event) ->
     el = Monocle.Dom event.target
