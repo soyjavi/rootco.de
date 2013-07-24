@@ -28,6 +28,6 @@ class __View.TreeFolder extends Tree
   template: """<abbr>{{name}}</abbr><nav data-folder="{{fullPath}}" class="collapsed"></nav>"""
 
   toggle: (event) ->
-    if event.target.nodeName is "ABBR"
+    if event.target.nodeName.toLowerCase() is "abbr"
       $$(event.target.nextSibling).toggleClass "collapsed"
       @doNothing event

@@ -1,31 +1,29 @@
 @fileSystem = do ->
 
-  STORAGE_KEY = "rootco.de-localStorage"
+  IGNORE_FOLDERS =  [".git", "node_modules"]
+  IGNORE_FILES =    [".DS_Store"]
 
-  IGNORE_FOLDERS = [".git", "node_modules"]
-  IGNORE_FILES = [".DS_Store"]
-
-  CACHED_FILES = []
+  _cachedFiles = []
 
   importItems = (items, container) ->
     _readFolder([item.webkitGetAsEntry()], container) for item in items
 
   readFile = (file, callback) ->
-    cachedObject = CACHED_FILES[file]
-    unless cachedObject.loaded
-      entry = cachedObject.entry
+    cachedObj = _cachedFiles[file]
+    unless cachedObj.loaded
+      entry = cachedObj.entry
       entry.file (file) ->
         reader = new FileReader()
         reader.onloadend = (e) ->
-          cachedObject.loaded = true
-          cachedObject.code = this.result
-          callback.call callback, cachedObject
+          cachedObj.loaded = true
+          cachedObj.code = this.result
+          callback.call __Controller.Main, cachedObj
         reader.readAsText(file)
     else
-      callback.call callback, cachedObject
+      callback.call __Controller.Main, cachedObj
 
-  save = (fullPath, code) ->
-    CACHED_FILES[fullPath].code = code
+  save = (path, code) ->
+    _cachedFiles[path].code = code
 
   _readFolder = (entries, parentNode) ->
     for entry in entries
@@ -34,8 +32,8 @@
         container = document.querySelector "[data-folder='#{entry.fullPath}']"
         _handleFolderEntities entry.createReader(), container
       else if entry.isFile and entry.name not in IGNORE_FILES
-        CACHED_FILES[entry.fullPath] = _createModel entry
-        new __View.TreeFile model: CACHED_FILES[entry.fullPath], container: parentNode
+        _cachedFiles[entry.fullPath] = _createModel entry
+        new __View.TreeFile model: _cachedFiles[entry.fullPath], container: parentNode
 
   _handleFolderEntities = (directoryReader, parentNode) ->
     entries = []
@@ -70,13 +68,7 @@
       code: ""
 
 
-  # do ->
-  #   saveCache = -> Device.Storage.local STORAGE_KEY, {files: CACHED_FILES}
-  #   setInterval saveCache, 10000
-
-
-
   importItems: importItems
   readFile: readFile
   save: save
-  log: -> console.log CACHED_FILES
+  log: -> console.log _cachedFiles

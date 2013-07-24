@@ -14,6 +14,7 @@ html
 
     link(rel='stylesheet', href='stylesheets/rootcode.0.0.1.css')
     link(rel='stylesheet', href='stylesheets/rootcode.theme.flatland.css')
+
   body#ide
 
     //- ASIDE
@@ -50,12 +51,12 @@ html
       footer footer for test
 
     //- COLUMN-1
-    section
-      header
-        button(data-action="aside") .\
-        nav(data-control="files")
-          a.active(href="#") instructions.md
-      article#col-1.first
+    //- section
+    //-   header
+    //-     button(data-action="aside") .\
+    //-     nav(data-control="files")
+    //-       //- a.active(href="#") instructions.md
+    //-   article#col-1.first
 
     //- //- COLUMN-2
     //- section.active
@@ -87,4 +88,4 @@ html
     script(src='ace/ace.js')
     script(src='ace/keybinding-emacs.js')
     script(src='javascripts/rootcode.components.js')
-    script(src='javascripts/rootcode.0.0.1.js')
+    script(src='javascripts/rootcode.0.0.1.debug.js')

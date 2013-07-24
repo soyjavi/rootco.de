@@ -16,6 +16,10 @@ class AsideCtrl extends Monocle.Controller
 
   onFilesDragenter: (event) -> _doNothing event
 
+  show:   -> @el.addClass "active"
+  hide:   -> @el.removeClass "active"
+  toggle: -> @el.toggleClass "active"
+
   _doNothing = (event) ->
     do event.preventDefault
     do event.stopPropagation

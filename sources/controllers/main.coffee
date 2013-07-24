@@ -1,42 +1,42 @@
 class MainCtrl extends Monocle.Controller
 
-  _instance: null
-  _sections: []
-  _currentSection: null
+  _columns: []
+  _activeColumn: null
 
   elements:
     "aside"               : "aside"
     "section"             : "sections"
 
   events:
-    "tap [data-action=aside]"               : "onToggleAside"
-    "tap [data-control=files] a, article"   : "onFile"
+    "click [data-action=aside]"               : "onToggleAside"
+    "click [data-action=add_column]"          : "addColumn"
 
   constructor: ->
     super
-    __Model.File.bind "create", @bindFileCreate
-    # _instance = ace.edit "col-1"
-    # _instance = ace.edit "col-2"
-    # _instance = ace.edit "col-3"
-    # _instance.setTheme "ace/theme/monokai"
-    # console.error @sections
-    new __View.Column model: a: "1"
+    @addColumn true
 
-  bindFileCreate: (event) ->
-    console.debug "File created"
+  onFileLoad: (fileModel) ->
+    _doNothing event
+    @addColumn true unless @_columns.length
+    @_activeColumn.showFile fileModel
 
-  onToggleAside: (event) ->
-    @aside.toggleClass "active"
+  onToggleAside: ->
+    __Controller.Aside.toggle()
 
-  onFile: (event) ->
-    el = Monocle.Dom(event.currentTarget)
-    el.addClass("active").siblings().removeClass "active"
-    _currentSection = el.parent("section")
-    _currentSection.addClass("active").siblings().removeClass "active"
+  addColumn: (first = false) ->
+    @_activeColumn = new __View.Column model: {index: @_columns.length + 1, first: first}
+    @_columns.push @_activeColumn
+    @setActiveColumn @_columns.length
 
-  onFileLoad: (data) ->
-    console.debug "Main -->", data
+  setActiveColumn: (column_index) ->
+    @_activeColumn = @_columns[column_index - 1]
+    col.el.removeClass "active" for col in @_columns
+    @_activeColumn.el.addClass "active"
 
+  _doNothing = (event) ->
+    do event.preventDefault
+    do event.stopPropagation
+    false
 
 $$ ->
   __Controller.Main = new MainCtrl "body"
