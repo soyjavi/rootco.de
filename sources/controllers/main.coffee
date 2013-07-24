@@ -1,5 +1,6 @@
 class MainCtrl extends Monocle.Controller
 
+  MAX_COLUMNS = 3
   _columns: []
   _activeColumn: null
 
@@ -23,9 +24,11 @@ class MainCtrl extends Monocle.Controller
   onToggleAside: -> __Controller.Aside.toggle()
 
   addColumn: (first = false) ->
-    @_activeColumn = new __View.Column model: {index: @_columns.length + 1, first: first}
-    @_columns.push @_activeColumn
-    @setActiveColumn @_columns.length
+    if @_columns.length < MAX_COLUMNS
+      @_activeColumn = new __View.Column model: {index: @_columns.length + 1, first: first}
+      @_columns.push @_activeColumn
+      @setActiveColumn @_columns.length
+    else alert "Columns limit reached"
 
   setActiveColumn: (column_index) ->
     @_activeColumn = @_columns[column_index - 1]

@@ -35,6 +35,7 @@ class __View.Column extends Monocle.View
       <header>
         {{#first}}
         <button data-action="aside">.\\\\</button>
+        <button data-action="add_column"> + </button>
         {{/first}}
         <nav data-control="files"></nav>
       </header>
@@ -72,6 +73,7 @@ class __View.Column extends Monocle.View
       @_setActiveNav file_index
       @_showFileCode file
     else
+      # no file to show
       do @_setActiveNav
       @ace.setValue ""
 
@@ -101,6 +103,7 @@ class __View.Column extends Monocle.View
     do __Controller.Aside.hide
 
   _onNavClick: (event) ->
+    __Controller.Main.setActiveColumn @model.index
     el = Monocle.Dom event.target
     el.addClass("active").siblings().removeClass("active")
     file_index = el.attr("data-index").replace("file-", "")
@@ -108,8 +111,8 @@ class __View.Column extends Monocle.View
     @_showFileCode file
 
   _onArticleClick: (event) ->
-    do __Controller.Aside.hide
     __Controller.Main.setActiveColumn @model.index
+    do __Controller.Aside.hide
 
   _initAce: (id) ->
     @ace = ace.edit "ace-#{id}"
