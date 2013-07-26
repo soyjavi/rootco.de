@@ -1,0 +1,88 @@
+
+# 10 MB
+STORAGE_TO_REQUEST = 10*1024*1024
+
+@LocalFileSystem = do ->
+
+  FS = null
+
+  FSInit = (fs) -> FS = fs
+
+  #============================================================================================================
+  File = do ->
+
+    read = (path, filename, callback) ->
+      FS.root.getFile name, {create: true}, (fileEntry) ->
+        fileEntry.file (file) ->
+          reader = new FileReader()
+          reader.onloadend = (e) -> callback.call callback, this.result
+          reader.readAsText file
+
+    save = (path, filename, content="", callback=null) ->
+      FS.root.getFile name, {create: false}, (fileEntry) ->
+        fileEntry.createWriter (fileWriter) ->
+          fileWriter.onwriteend = (e) ->
+            console.debug "Created and writed #{name}"
+            if callback then callback.call callback
+          fileWriter.onerror    = (e) -> console.error "Write failed: #{e.toString()}"
+          blob = new Blob([content], {type: 'text/plain'})
+          fileWriter.write blob
+
+    remove = (path, name) -> console.error 'not yet...'
+
+    read: read
+    save: save
+    remove: remove
+
+
+  #============================================================================================================
+  Folder = do ->
+
+    read = (dirEntry, callback) ->
+      dirEntry = dirEntry or FS.root
+      dirReader = dirEntry.createReader()
+      entries = []
+      _read = (dirReader) ->
+         dirReader.readEntries (results) ->
+          if !results.length
+            callback.call callback, entries.sort()
+          else
+            entries = entries.concat(Array.prototype.slice.call(results || [], 0))
+            _read dirReader
+
+      _read dirReader
+
+    create = (path, callback=null) ->
+      _create = (path, folders) ->
+        if folders[0] is "." or folders[0] is ""
+          folders = folders.slice(1)
+        fs.root.getDirectory folders[0], {create: true}, (nextPathEntry) ->
+          if folders.length then _create nextPathEntry, floders.slice(1)
+
+      _create FS.root, path.split('/')
+
+    remove = (path, callback) ->
+      fs.root.getDirectory path, {}, (dirEntry) ->
+        dirEntry.removeRecursively ->
+          console.log "Directory removed."
+          callback.call callback
+
+
+    read: read
+    create: create
+    remove: remove
+
+
+  #============================================================================================================
+  $$ ->
+    _storageAllowed = ->
+      window.requestFileSystem = window.requestFileSystem or window.webkitRequestFileSystem
+      window.requestFileSystem window.PERSISTENT, STORAGE_TO_REQUEST, FSInit, ( -> @ )
+    _storageDenied = ->
+      console.error 'Local File Storage denied'
+
+    window.storageInfo = window.webkitStorageInfo or window.storageInfo
+    window.storageInfo.requestQuota window.PERSISTENT, STORAGE_TO_REQUEST, _storageAllowed, _storageDenied
+
+  File: File
+  Folder: Folder
