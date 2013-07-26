@@ -13,6 +13,7 @@ module.exports = (grunt) ->
     # =========================================================================
 
     source:
+      fsWorker: "sources/worker/fs_worker.coffee"
       coffee: [
         "sources/*.coffee",
         "sources/models/*.coffee",
@@ -35,11 +36,13 @@ module.exports = (grunt) ->
 
     # =========================================================================
     coffee:
+      fsWorker: files: "<%=meta.package%>/javascripts/fs_worker.debug.js": "<%= source.fsWorker %>"
       core: files: "<%=meta.package%>/javascripts/<%=pkg.name%>.<%=pkg.version%>.debug.js": "<%= source.coffee %>"
 
     uglify:
       options: compress: false, banner: "<%= meta.banner %>"
       core: files: "<%=meta.package%>/javascripts/<%=pkg.name%>.<%=pkg.version%>.js": "<%=meta.package%>/javascripts/<%=pkg.name%>.<%=pkg.version%>.debug.js"
+      fsWorker: files: "<%=meta.package%>/javascripts/fs_worker.js": "<%=meta.package%>/javascripts/fs_worker.debug.js"
 
     stylus:
       core:
@@ -60,7 +63,7 @@ module.exports = (grunt) ->
 
     watch:
       coffee:
-        files: ["<%= source.coffee %>"]
+        files: ["<%= source.coffee %>", "<%= source.fsWorker %>"]
         tasks: ["coffee", "uglify"]
       stylus:
         files: ["<%= source.stylus %>", "<%= source.themes %>"]

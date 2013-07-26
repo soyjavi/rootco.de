@@ -77,37 +77,4 @@
 
 
 
-@LocalFileSystem = do ->
-
-  # 10 MB
-  STORAGE_TO_REQUEST = 10*1024*1024
-  FS = null
-
-  FSInit = (fs) ->
-    FS = fs
-    saveOrCreateFile "/", "ina.txt", "dataaaaaaa"
-
-  saveOrCreateFile = (path, name, content) ->
-    FS.root.getFile name, {create: true}, (fileEntry) ->
-      fileEntry.createWriter (fileWriter) ->
-        fileWriter.onwriteend = (e) -> console.debug "Created and writed #{name}"
-        fileWriter.onerror    = (e) -> console.error "Write failed: #{e.toString()}"
-        blob = new Blob([content], {type: 'text/plain'})
-        fileWriter.write blob
-
-
-  do ->
-
-    _storageAllowed = ->
-      window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem
-      window.requestFileSystem window.PERSISTENT, STORAGE_TO_REQUEST, FSInit, ( -> @ )
-
-    _storageDenied = ->
-      console.error 'Local File Storage denied'
-
-    window.storageInfo = window.webkitStorageInfo or window.storageInfo
-    window.storageInfo.requestQuota window.PERSISTENT, STORAGE_TO_REQUEST, _storageAllowed, _storageDenied
-
-
-
 
