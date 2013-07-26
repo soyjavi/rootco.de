@@ -5,8 +5,6 @@
 
   _cachedFiles = []
 
-
-
   importItems = (items, container) ->
     _readFolder([item.webkitGetAsEntry()], container) for item in items
 

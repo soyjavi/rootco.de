@@ -35,6 +35,9 @@ class MainCtrl extends Monocle.Controller
     col.el.removeClass "active" for col in @_columns
     @_activeColumn.el.addClass "active"
 
+  saveCurrentFile: () ->
+    do @_activeColumn.saveFile
+
   _doNothing = (event) ->
     do event.preventDefault
     do event.stopPropagation

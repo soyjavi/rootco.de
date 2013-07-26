@@ -1,6 +1,9 @@
 
 fs = @webkitRequestFileSystemSync(PERSISTENT, 10 * 1024 * 1024)
 
+
+#======================== Files ==============================
+
 FileHandler = do ->
 
   getEntry = (filepath, create = false) ->
@@ -28,7 +31,7 @@ FileHandler = do ->
     unless fileEntry then postMessage false
     else
       writer = fileEntry.createWriter()
-      blob = new Blob([ content ], type: "text/plain")
+      blob = new Blob([content], type: "text/plain")
       writer.write blob
       postMessage true
 
@@ -44,6 +47,7 @@ FileHandler = do ->
   remove: remove
 
 
+#======================== Folders ==============================
 
 FolderHandler = do ->
   getEntry = (path) ->
@@ -70,7 +74,7 @@ FolderHandler = do ->
   create = (path) ->
     _create = (dirEntry, folders) ->
       return unless folders.length
-      folders = folders.slice(1)  if folders[0] is "." or folders[0] is ""
+      folders = folders.slice(1) if folders[0] is "." or folders[0] is ""
       dirEntry = dirEntry.getDirectory(folders[0], create: true)
       _create dirEntry, folders.slice(1) if folders.length
 
@@ -90,6 +94,8 @@ FolderHandler = do ->
   remove: remove
 
 
+#======================== Worker events ==============================
+
 @onmessage = (e) ->
   data = e.data
   switch data.action
@@ -105,3 +111,4 @@ FolderHandler = do ->
       FileHandler.save data.path, data.content
     when "delete_file"
       FileHandler.remove data.path
+

@@ -19,6 +19,9 @@ ACE_EXT_LANG =
 class __View.Column extends Monocle.View
 
   files: null
+  currentFile: null
+  currentIndex: null
+
   ace: null
   article: null
   nav: null
@@ -27,11 +30,11 @@ class __View.Column extends Monocle.View
 
   events:
     "click nav > a" : "_onNavClick"
-    "hold nav > a"  : "_closeFile"
+    # "hold nav > a"  : "_closeFile"
     "click article" : "_onArticleClick"
 
   template: """
-    <section class="{{#first}}active{{/first}}">
+    <section class="{{#first}}active{{/first}}" id="column_{{index}}">
       <header>
         {{#first}}
         <button data-action="aside">.\\\\</button>
@@ -39,51 +42,27 @@ class __View.Column extends Monocle.View
         {{/first}}
         <nav data-control="files"></nav>
       </header>
-      <article id="ace-{{index}}"></article>
+      <article></article>
     </section>
   """
 
   constructor: ->
     super
     @files = []
-    @ace = null
+    @currentFile = null
+    @currentIndex = null
     @append @model
     @nav = @el.find "[data-control=files]"
     @article = @el.find "article"
-    @_initAce @model.index
 
   openFile: (file) ->
-    file_index = @_getFileIndex file
-    if file_index is -1
-      @_addFileNav file
+    index = @_getFileIndex file
+    if index is -1
       @files.push file
-      file_index = @files.length - 1
+      index = @files.length - 1
+      @_appendNavArticle file, index
 
-    @_setActiveNav file_index
-    @_showFileCode file
-
-  _closeFile: () ->
-    el = Monocle.Dom event.target
-    file_index = el.attr("data-index").replace("file-", "")
-    @files.splice(file_index, 1)
-    el.remove()
-    do @_recalcNavIndexes
-    file = @files[parseInt(file_index, 10)]
-    if file
-      @_setActiveNav file_index
-      @_showFileCode file
-    else
-      # no file to show
-      do @_setActiveNav
-      @ace.setValue ""
-
-  _recalcNavIndexes: ->
-    i = 0
-    @nav.find("a").each -> @setAttribute "data-index", "file-#{i++}"
-
-  _setActiveNav: (file_index) ->
-    @nav.find("a").removeClass "active"
-    if file_index? then @nav.find("[data-index=file-#{file_index}]").addClass "active"
+    @_showTab index
 
   _getFileIndex: (file_to_search) ->
     i = 0
@@ -92,38 +71,50 @@ class __View.Column extends Monocle.View
       i++
     return -1
 
-  _addFileNav: (model, index) ->
-    html = """<a href="#" class="active" data-index="file-#{@files.length}">#{model.name}</a>"""
+  _appendNavArticle: (file_data, index) ->
+    html = """<a href="#" class="active" data-index="file-#{index}">#{file_data.name}</a>"""
     @nav.append Monocle.Dom html
+    article = document.createElement("article")
+    article.setAttribute("data-index", "file-#{index}")
+    @el[0].appendChild(article)
+    @_initAce article, file_data
 
-  _showFileCode: (file) ->
-    @ace.setValue file.code
-    @_setMode file.extension
-    @ace.clearSelection()
+  _showTab: (index) ->
+    @currentIndex = index
+    @currentFile = @files[index]
+    selector = "[data-index=file-#{index}]"
+    @el.children(selector).removeClass("hidden").siblings().addClass("hidden")
+    @nav.find(selector).addClass("active").siblings().removeClass("active")
     do __Controller.Aside.hide
 
   _onNavClick: (event) ->
     __Controller.Main.setActiveColumn @model.index
     el = Monocle.Dom event.target
-    el.addClass("active").siblings().removeClass("active")
-    file_index = el.attr("data-index").replace("file-", "")
-    file = @files[parseInt(file_index, 10)]
-    @_showFileCode file
+    index = el.attr("data-index").replace("file-", "")
+    @_showTab index
 
   _onArticleClick: (event) ->
     __Controller.Main.setActiveColumn @model.index
     do __Controller.Aside.hide
 
-  _initAce: (id) ->
-    @ace = ace.edit "ace-#{id}"
-    @ace.setTheme "ace/theme/monokai"
-    @ace.setShowInvisibles true
-    @ace.setDisplayIndentGuides false
-    @ace.setFontSize "12px"
-    @ace.setPrintMarginColumn 80
-    @ace.setBehavioursEnabled true
+  _initAce: (article, file_data) ->
+    file_data.ace = ace.edit article
+    file_data.ace.setTheme "ace/theme/monokai"
+    file_data.ace.setShowInvisibles true
+    file_data.ace.setDisplayIndentGuides false
+    file_data.ace.setFontSize "12px"
+    file_data.ace.setPrintMarginColumn 80
+    file_data.ace.setBehavioursEnabled true
+    language = ACE_EXT_LANG[file_data.extension] or "text"
+    file_data.ace.getSession().setMode "ace/mode/#{language}"
+    file_data.ace.setValue file_data.code
+    file_data.ace.clearSelection()
+    self = @
+    file_data.ace.getSession().getDocument().on "change", (data) ->
+      self.nav.find(".active").addClass "unsaved"
 
-  _setMode: (extension) ->
-    language = ACE_EXT_LANG[extension] or "text"
-    mode = "ace/mode/#{language}"
-    @ace.getSession().setMode mode
+  saveFile: () ->
+    @nav.find("[data-index=file-#{@currentIndex}]").removeClass "unsaved"
+    alert "call to save"
+
+
