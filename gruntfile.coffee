@@ -3,6 +3,7 @@ module.exports = (grunt) ->
     pkg: grunt.file.readJSON "package.json"
 
     meta:
+      temp   : "build",
       package: "package",
       banner : """
         /* <%= pkg.name %> v<%= pkg.version %> - <%= grunt.template.today("m/d/yyyy") %>
@@ -13,7 +14,6 @@ module.exports = (grunt) ->
     # =========================================================================
 
     source:
-      fsWorker: "sources/worker/fs_worker.coffee"
       coffee: [
         "sources/*.coffee",
         "sources/models/*.coffee",
@@ -26,23 +26,25 @@ module.exports = (grunt) ->
         "sources/jades/*.jade"]
       themes: [
         "sources/stylesheets/theme/theme.flatland.styl"]
+      workers: [
+        "sources/workers/*.coffee"]
 
     components:
       js: [
-        "components/quojs/quo.js",
+        "components/jquery/jquery.js",
         "components/monocle/monocle.js",
         "components/hope/hope.js",
         "components/device.js/device.js"]
 
     # =========================================================================
     coffee:
-      fsWorker: files: "<%=meta.package%>/javascripts/fs_worker.debug.js": "<%= source.fsWorker %>"
-      core: files: "<%=meta.package%>/javascripts/<%=pkg.name%>.<%=pkg.version%>.debug.js": "<%= source.coffee %>"
+      core: files: "<%=meta.temp%>/<%=pkg.name%>.js": "<%= source.coffee %>"
+      workers: files: "<%=meta.temp%>/workers/filesystem.js": "<%= source.workers %>"
 
     uglify:
       options: compress: false, banner: "<%= meta.banner %>"
-      core: files: "<%=meta.package%>/javascripts/<%=pkg.name%>.<%=pkg.version%>.js": "<%=meta.package%>/javascripts/<%=pkg.name%>.<%=pkg.version%>.debug.js"
-      fsWorker: files: "<%=meta.package%>/javascripts/fs_worker.js": "<%=meta.package%>/javascripts/fs_worker.debug.js"
+      core: files: "<%=meta.package%>/javascripts/<%=pkg.name%>.<%=pkg.version%>.js": "<%=meta.temp%>/<%=pkg.name%>.js"
+      workers: files: "<%=meta.package%>/javascripts/workers/filesystem.js": "<%=meta.temp%>/workers/filesystem.js"
 
     stylus:
       core:
@@ -63,14 +65,17 @@ module.exports = (grunt) ->
 
     watch:
       coffee:
-        files: ["<%= source.coffee %>", "<%= source.fsWorker %>"]
-        tasks: ["coffee", "uglify"]
+        files: ["<%= source.coffee %>"]
+        tasks: ["coffee:core", "uglify:core"]
       stylus:
         files: ["<%= source.stylus %>", "<%= source.themes %>"]
         tasks: ["stylus"]
       jade:
         files: ["<%= source.jade %>"]
         tasks: ["jade"]
+      workers:
+        files: ["<%= source.workers %>"]
+        tasks: ["coffee:workers", "uglify:workers"]
       components:
         files: ["<%= components.js %>"]
         tasks: ["concat"]
