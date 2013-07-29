@@ -1,46 +1,47 @@
-ACE_EXT_LANG =
-  "coffee"  : "coffee"
-  "js"      : "javascript"
-  "py"      : "python"
-  "html"    : "html"
-  "css"     : "css"
-  "jade"    : "jade"
-  "php"     : "php"
-  "json"    : "json"
-  "jsp"     : "jsp"
-  "less"    : "less"
-  "styl"    : "stylus"
-  "txt"     : "text"
-  "xml"     : "xml"
-  "rb"      : "ruby"
-  "sh"      : "batchfile"
-
-
 class __View.Column extends Monocle.View
 
-  files: null
-  currentFile: null
+  EXTENSION:
+    coffee    : "coffee"
+    js        : "javascript"
+    py        : "python"
+    html      : "html"
+    css       : "css"
+    jade      : "jade"
+    php       : "php"
+    json      : "json"
+    jsp       : "jsp"
+    less      : "less"
+    styl      : "stylus"
+    txt       : "text"
+    xml       : "xml"
+    rb        : "ruby"
+    sh        : "batchfile"
+
+  files       : null
+  currentFile : null
   currentIndex: null
 
-  ace: null
-  article: null
-  nav: null
+  ace         : null
+  article     : null
+  nav         : null
 
-  container: "body"
+  container   : "body"
 
   events:
-    "click nav > a" : "_onNavClick"
-    # "hold nav > a"  : "_closeFile"
-    "click article" : "_onArticleClick"
+    "click nav > a"                      : "onNav"
+    "click article"                      : "onArticle"
+    "click [data-action='remove_column']": "onRemove"
 
   template: """
     <section class="{{#first}}active{{/first}}" id="column_{{index}}">
       <header>
         {{#first}}
         <button data-action="aside">.\\\\</button>
-        <button data-action="add_column"> + </button>
         {{/first}}
         <nav data-control="files"></nav>
+        {{^first}}
+        <button data-action="remove_column">X</button>
+        {{/first}}
       </header>
       <article></article>
     </section>
@@ -55,6 +56,23 @@ class __View.Column extends Monocle.View
     @nav = @el.find "[data-control=files]"
     @article = @el.find "article"
 
+
+  # EVENTS
+  onNav: (event) ->
+    __Controller.Main.activeColumn @model.index
+    el = Monocle.Dom event.target
+    index = el.attr("data-index").replace("file-", "")
+    @_showTab index
+
+  onArticle: (event) ->
+    __Controller.Main.activeColumn @model.index
+    do __Controller.Aside.hide
+
+  onRemove: (event) ->
+    @remove()
+
+
+  # PUBLIC METHODS
   openFile: (file) ->
     index = @_getFileIndex file
     if index is -1
@@ -64,6 +82,13 @@ class __View.Column extends Monocle.View
 
     @_showTab index
 
+
+  saveFile: () ->
+    @nav.find("[data-index=file-#{@currentIndex}]").removeClass "unsaved"
+    alert "call to save"
+
+
+  # PRIVATE METHOS
   _getFileIndex: (file_to_search) ->
     i = 0
     for file in @files
@@ -87,15 +112,7 @@ class __View.Column extends Monocle.View
     @nav.find(selector).addClass("active").siblings().removeClass("active")
     do __Controller.Aside.hide
 
-  _onNavClick: (event) ->
-    __Controller.Main.setActiveColumn @model.index
-    el = Monocle.Dom event.target
-    index = el.attr("data-index").replace("file-", "")
-    @_showTab index
 
-  _onArticleClick: (event) ->
-    __Controller.Main.setActiveColumn @model.index
-    do __Controller.Aside.hide
 
   _initAce: (article, file_data) ->
     file_data.ace = ace.edit article
@@ -105,16 +122,10 @@ class __View.Column extends Monocle.View
     file_data.ace.setFontSize "12px"
     file_data.ace.setPrintMarginColumn 80
     file_data.ace.setBehavioursEnabled true
-    language = ACE_EXT_LANG[file_data.extension] or "text"
+    language = @EXTENSION[file_data.extension] or "text"
     file_data.ace.getSession().setMode "ace/mode/#{language}"
     file_data.ace.setValue file_data.code
     file_data.ace.clearSelection()
     self = @
     file_data.ace.getSession().getDocument().on "change", (data) ->
       self.nav.find(".active").addClass "unsaved"
-
-  saveFile: () ->
-    @nav.find("[data-index=file-#{@currentIndex}]").removeClass "unsaved"
-    alert "call to save"
-
-

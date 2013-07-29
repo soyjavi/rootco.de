@@ -15,7 +15,16 @@ body
   background: BASE
   color: COLOR
 
+  & button
+    color: BASE
+    background-color: darken(COLOR, 25%)
+    &:hover, &:active
+      background-color: COLOR
+
   & > section
+    & button[data-action="remove_column"]
+      background-color: ARTICLE
+
     & article
       background-color: ARTICLE
       border-top: solid 0.2em ARTICLE
@@ -23,11 +32,6 @@ body
       background-color: darken(ARTICLE, 15%)
       color: lighten(BASE, 50%)
 
-  & button
-    color: BASE
-    background-color: darken(COLOR, 25%)
-    &:hover, &:active
-      background-color: COLOR
 
 nav[data-control=files]
   & a
@@ -41,12 +45,13 @@ nav[data-control=files]
         color: COLOR
 
 
-nav[data-control=tree]
+nav[data-control=resources]
+  font-weight: bold
   & span
-    &.active
-      background-color: lighten(BASE, 10%) !important
+    color: lighten(BASE, 50%)
+    &:active
+      // background-color: lighten(BASE, 10%) !important
       color: THEME
-      font-weight: bold
 
   & abbr, span
     &:not(.active)

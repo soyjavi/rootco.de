@@ -33,9 +33,9 @@ nav[data-control="files"]
       //   opacity: 1
 
 
-nav[data-control="tree"]
+nav[data-control="resources"]
   padding: 0 0 0.75em 0.75em
-  font-size: 0.85em
+  font-size: 0.8em
   overflow: auto
   vendor(user-select, none)
   cursor: default
@@ -43,6 +43,25 @@ nav[data-control="tree"]
     padding-left: 1em
     &.collapsed
       display: none
+
+  // &:hover
+  //   background-color: rgba(0,0,0,0.25)
+  //   position: relative
+  //   & nav, span
+  //     opacity: 0.5
+  //   &:after
+  //     content: "Drag a file or folder"
+  //     position: absolute
+  //     display: block
+  //     top: 47.5%
+  //     width: 75%
+  //     margin-left: 10%
+  //     font-size: 1.25em
+  //     font-weight: 900
+  //     line-height: 2.0em
+  //     text-align: center
+  //     background-color: rgba(0,0,0,0.5)
+  //     border-radius 0.2em
 
   & abbr, & span
     display: block

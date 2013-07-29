@@ -7,12 +7,11 @@ STORAGE_TO_REQUEST = 10*1024*1024
   worker = null
 
   FSInit = (fs) ->
-    worker = new Worker("javascripts/fs_worker.js")
+    worker = new Worker("javascripts/workers/filesystem.js")
     worker.onmessage = (e) ->
       console.debug "Worker message :: ", e.data
 
-  $$ ->
-
+  $ ->
     _storageAllowed = ->
       window.requestFileSystem = window.requestFileSystem or window.webkitRequestFileSystem
       window.requestFileSystem window.PERSISTENT, STORAGE_TO_REQUEST, FSInit, ( -> @ )

@@ -1,11 +1,9 @@
-
-fs = @webkitRequestFileSystemSync(PERSISTENT, 10 * 1024 * 1024)
-
+self.requestFileSystemSync = self.webkitRequestFileSystemSync || self.requestFileSystemSync
+fs = self.requestFileSystemSync(PERSISTENT, 10 * 1024 * 1024)
 
 #======================== Files ==============================
 
 FileHandler = do ->
-
   getEntry = (filepath, create = false) ->
     path_split = filepath.split("/")
     path = path_split.slice(0, -1).join("/")

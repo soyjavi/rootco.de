@@ -1,31 +1,37 @@
 class AsideCtrl extends Monocle.Controller
 
   elements:
-    "nav[data-control=tree]": "filesTree"
+    "nav[data-control=resources]"        : "resources"
 
   events:
-    "dragover [data-control=fileDrop]": "onFilesDragover"
-    "dragenter [data-control=fileDrop]": "onFilesDragenter"
-    "drop [data-control=fileDrop]": "onFilesDropped"
+    "dragover [data-control=resources]"  : "onFilesDragover"
+    "dragenter [data-control=resources]" : "onFilesDragenter"
+    "drop [data-control=resources]"      : "onFilesDropped"
 
   onFilesDropped: (event) ->
-    _doNothing event
-    fileSystem.importItems event.dataTransfer.items, @filesTree[0]
+    _prevent event
+    fileSystem.read event.originalEvent.dataTransfer.items, @resources[0]
 
-  onFilesDragover: (event) -> _doNothing event
+  onFilesDragover: (event) ->
+    _prevent event
 
-  onFilesDragenter: (event) -> _doNothing event
+  onFilesDragenter: (event) ->
+    _prevent event
 
-  show:   -> @el.addClass "active"
-  hide:   -> @el.removeClass "active"
-  toggle: -> @el.toggleClass "active"
+  show: ->
+    @el.addClass "active"
 
-  _doNothing = (event) ->
+  hide: ->
+    @el.removeClass "active"
+
+  toggle: ->
+    @el.toggleClass "active"
+
+  # PRIVATE
+  _prevent = (event) ->
     do event.preventDefault
     do event.stopPropagation
     false
 
-
-$$ ->
+$ ->
   __Controller.Aside = new AsideCtrl "aside"
-

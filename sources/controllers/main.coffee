@@ -1,8 +1,7 @@
 class MainCtrl extends Monocle.Controller
 
-  MAX_COLUMNS = 3
-  _columns: []
-  _activeColumn: null
+  _columns      : []
+  _activeColumn : null
 
   elements:
     "aside"               : "aside"
@@ -10,38 +9,40 @@ class MainCtrl extends Monocle.Controller
 
   events:
     "click [data-action=aside]"               : "onToggleAside"
-    "click [data-action=add_column]"          : "addColumn"
+    "click [data-action=add_column]"          : "onAddColumn"
 
   constructor: ->
     super
-    @addColumn true
+    @_addColumn true
 
+  # EVENTS
   onFileLoad: (fileModel) ->
-    _doNothing event
-    unless @_columns.length then @addColumn true
+    do event.preventDefault
+    do event.stopPropagation
     @_activeColumn.openFile fileModel
 
-  onToggleAside: -> __Controller.Aside.toggle()
+  onToggleAside: ->
+    do __Controller.Aside.toggle
 
-  addColumn: (first = false) ->
-    if @_columns.length < MAX_COLUMNS
-      @_activeColumn = new __View.Column model: {index: @_columns.length + 1, first: first}
-      @_columns.push @_activeColumn
-      @setActiveColumn @_columns.length
-    else alert "Columns limit reached"
+  onAddColumn: (event) ->
+    do @_addColumn
+    do __Controller.Aside.hide
 
-  setActiveColumn: (column_index) ->
-    @_activeColumn = @_columns[column_index - 1]
+
+  # PUBLIC METHODS
+  activeColumn: (index) ->
+    @_activeColumn = @_columns[index - 1]
     col.el.removeClass "active" for col in @_columns
     @_activeColumn.el.addClass "active"
 
-  saveCurrentFile: () ->
+  # PRIVATE METHODS
+  _addColumn: (first = false) ->
+    column = __Model.Column.create index: @_columns.length + 1, first: first
+    @_columns.push new __View.Column model: column
+    @activeColumn column.index
+
+  _saveCurrentFile: () ->
     do @_activeColumn.saveFile
 
-  _doNothing = (event) ->
-    do event.preventDefault
-    do event.stopPropagation
-    false
-
-$$ ->
+$ ->
   __Controller.Main = new MainCtrl "body"

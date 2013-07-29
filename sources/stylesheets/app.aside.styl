@@ -1,0 +1,11 @@
+body > aside
+  width: 0
+  overflow: hidden
+  transition: all 300ms
+  &.active
+    width: ASIDE_WIDTH
+
+  & > header, > footer
+    padding: 0 1em
+  & nav
+    box-flex(1)

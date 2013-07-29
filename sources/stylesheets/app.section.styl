@@ -1,0 +1,28 @@
+body > section
+  margin-left: 0.15em
+  transition opacity 300ms
+
+  &:not(.active)
+    opacity: 0.6
+    & > header > button
+      &[data-action=remove_column]
+        visibility: hidden
+
+  & > header
+    & > button
+      float: left
+      margin: 0.6em
+      &[data-action=remove_column]
+        float: right
+
+  & > article
+    box-flex(1)
+    padding: 1em
+    font-family: "Courier New"
+    font-size: 14px
+    font-weight: bold
+    &.hidden
+      display: none
+
+  & > footer
+    font-size: FONT_TINY

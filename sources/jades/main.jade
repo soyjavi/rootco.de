@@ -12,80 +12,22 @@ html
     meta(name='format-detection', content='telephone=no')
     meta(http-equiv='cleartype', content='on')
 
-    link(rel='stylesheet', href='stylesheets/rootcode.0.0.1.css')
+    link(rel='stylesheet', href='stylesheets/rootcode.0.0.2.css')
     link(rel='stylesheet', href='stylesheets/rootcode.theme.flatland.css')
 
   body#ide
-
     //- ASIDE
-    aside
+    aside.active
       header
         strong .\rootco.de
+        button(data-action="add_column") +
 
-      nav(data-control="tree")
-
-        //- abbr rootco.de
-        //- nav
-        //-   abbr components
-        //-   nav
-        //-     abbr CSSmethods
-        //-   nav
-        //-     abbr device.js
-        //-   nav
-        //-     abbr hope
-        //-   nav
-        //-     abbr monocle
-        //-   nav
-        //-     abbr quojs
-        //-   span README.md
-        //-   span gruntfile.coffee
-
-        //- span .gitignore
-        //- span gruntfile.coffee
-        //- span.active package.json
-        //- span README.md
-
-      div(data-control="fileDrop")
-        span drag a project here
-
-      footer footer for test
-
-    //- COLUMN-1
-    //- section
-    //-   header
-    //-     button(data-action="aside") .\
-    //-     nav(data-control="files")
-    //-       //- a.active(href="#") instructions.md
-    //-   article#col-1.first
-
-    //- //- COLUMN-2
-    //- section.active
-    //-   header
-    //-     nav(data-control="files")
-    //-       a(href="#") .gitignore
-    //-       a.unsaved(href="#") gruntfile.coffee
-    //-       a.active(href="#") pair.coffee
-    //-         img.avatar.speaking(src="images/inigo.jpg")
-    //-         img.avatar(src="images/ina.jpg")
-    //-       a(href="#") package.json
-    //-   article#col-2.
-    //-     sum = (a, b) -> a + b
-
-    //-   footer. INSERT MODE, line 71, Column 32
-
-    //- //- COLUMN-3
-    //- section
-    //-   header
-    //-     nav(data-control="files")
-    //-       a.active.unsaved(href="#") style.styl
-
-    //-   article#col-3.
-    //-     body
-    //-       font-family: "Helvetica Neue"
+      nav(data-control="resources")
 
 
+      //- footer footer for test
 
     script(src='ace/ace.js')
     script(src='ace/keybinding-emacs.js')
     script(src='javascripts/rootcode.components.js')
-    script(src='javascripts/rootcode.0.0.1.debug.js')
+    script(src='javascripts/rootcode.0.0.2.js')
