@@ -25,5 +25,5 @@ class __View.Resource extends Monocle.View
       Monocle.Dom(event.target).next("nav").toggleClass "collapsed"
     else
       target = Monocle.Dom(event.target)
-      fileSystem.getFile @model.path, __Controller.Main.onFileLoad
+      fileSystem.getFile @model.path, __Controller.Columns.openFile
 

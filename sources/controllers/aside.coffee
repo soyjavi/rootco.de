@@ -12,20 +12,15 @@ class AsideCtrl extends Monocle.Controller
     _prevent event
     fileSystem.read event.originalEvent.dataTransfer.items, @resources[0]
 
-  onFilesDragover: (event) ->
-    _prevent event
+  onFilesDragover: (event) -> _prevent event
 
-  onFilesDragenter: (event) ->
-    _prevent event
+  onFilesDragenter: (event) -> _prevent event
 
-  show: ->
-    @el.addClass "active"
+  show: -> @el.addClass "active"
 
-  hide: ->
-    @el.removeClass "active"
+  hide: -> @el.removeClass "active"
 
-  toggle: ->
-    @el.toggleClass "active"
+  toggle: -> @el.toggleClass "active"
 
   # PRIVATE
   _prevent = (event) ->

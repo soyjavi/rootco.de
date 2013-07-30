@@ -59,20 +59,22 @@ class __View.Column extends Monocle.View
 
   # EVENTS
   onNav: (event) ->
-    __Controller.Main.activeColumn @model.index
+    __Controller.Columns.active @model.index
+
     el = Monocle.Dom event.target
     index = el.attr("data-index").replace("file-", "")
     @_showTab index
 
   onArticle: (event) ->
-    __Controller.Main.activeColumn @model.index
-    do __Controller.Aside.hide
+    __Controller.Columns.active @model.index
 
-  onRemove: (event) ->
-    @remove()
-
+  onRemove: (event) -> @remove()
 
   # PUBLIC METHODS
+  active: -> @el.addClass "active"
+
+  deactive: -> @el.removeClass "active"
+
   openFile: (file) ->
     index = @_getFileIndex file
     if index is -1
@@ -82,10 +84,10 @@ class __View.Column extends Monocle.View
 
     @_showTab index
 
-
   saveFile: () ->
     @nav.find("[data-index=file-#{@currentIndex}]").removeClass "unsaved"
     alert "call to save"
+
 
 
   # PRIVATE METHOS
@@ -111,8 +113,6 @@ class __View.Column extends Monocle.View
     @el.children(selector).removeClass("hidden").siblings().addClass("hidden")
     @nav.find(selector).addClass("active").siblings().removeClass("active")
     do __Controller.Aside.hide
-
-
 
   _initAce: (article, file_data) ->
     file_data.ace = ace.edit article
