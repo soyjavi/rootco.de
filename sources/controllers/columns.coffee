@@ -39,7 +39,9 @@ class ColumnsCtrl extends Monocle.Controller
 
   openFile: (model) -> _active.openFile model
 
-  saveFile: -> do @_active.saveFile
+  saveFile: ->
+    console.log "Could be ... SAVE"
+    if @_active then do @_active.saveFile
 
 
   # PRIVATE methods

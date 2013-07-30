@@ -1,0 +1,2 @@
+window.rootcode = window.rc = {}
+

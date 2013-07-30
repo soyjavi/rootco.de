@@ -1,21 +1,6 @@
 class __View.Column extends Monocle.View
 
-  EXTENSION:
-    coffee    : "coffee"
-    js        : "javascript"
-    py        : "python"
-    html      : "html"
-    css       : "css"
-    jade      : "jade"
-    php       : "php"
-    json      : "json"
-    jsp       : "jsp"
-    less      : "less"
-    styl      : "stylus"
-    txt       : "text"
-    xml       : "xml"
-    rb        : "ruby"
-    sh        : "batchfile"
+  EXTENSION   : rc.Constants.EXTENSION
 
   files       : null
   currentFile : null
@@ -27,11 +12,6 @@ class __View.Column extends Monocle.View
 
   container   : "body"
 
-  events:
-    "click nav > a"                      : "onNav"
-    "click article"                      : "onArticle"
-    "click [data-action='remove_column']": "onRemove"
-
   template: """
     <section class="{{#first}}active{{/first}}" id="column_{{index}}">
       <header>
@@ -39,13 +19,23 @@ class __View.Column extends Monocle.View
         <button data-action="aside">.\\\\</button>
         {{/first}}
         <nav data-control="files"></nav>
-        {{^first}}
-        <button data-action="remove_column">X</button>
-        {{/first}}
       </header>
       <article></article>
     </section>
   """
+
+  events:
+    "click nav > a"                     : "onNav"
+    "click article"                     : "onArticle"
+    "click [data-action=remove_column]" : "onRemove"
+    # "dragstart [data-control=files] > a": "onDragStart"
+    "dragenter [data-control=files]"    : "onDragEnter"
+    "dragover [data-control=files]"     : "onDragOver"
+    "drop [data-control=files]"         : "onDrop"
+
+
+  elements:
+    "[data-control=files]"              : "files"
 
   constructor: ->
     super
@@ -56,7 +46,6 @@ class __View.Column extends Monocle.View
     @nav = @el.find "[data-control=files]"
     @article = @el.find "article"
 
-
   # EVENTS
   onNav: (event) ->
     __Controller.Columns.active @model.index
@@ -65,10 +54,29 @@ class __View.Column extends Monocle.View
     index = el.attr("data-index").replace("file-", "")
     @_showTab index
 
-  onArticle: (event) ->
-    __Controller.Columns.active @model.index
+  onArticle: (event) -> __Controller.Columns.active @model.index
 
   onRemove: (event) -> @remove()
+
+  onDragStart: (event) ->
+    console.error event.target
+    event.originalEvent.dataTransfer.setData "Text", "pe"
+
+  onDragEnter: (event) ->
+    _prevent event
+    console.error "ode"
+    @files.addClass "Prueba"
+
+  onDragOver: (event) -> _prevent event
+
+  onDrop: (event) ->
+    _prevent event
+    console.error "od", event.originalEvent.dataTransfer.getData "Text"
+
+  _prevent = (event) ->
+    do event.preventDefault
+    do event.stopPropagation
+    false
 
   # PUBLIC METHODS
   active: -> @el.addClass "active"
@@ -89,7 +97,6 @@ class __View.Column extends Monocle.View
     alert "call to save"
 
 
-
   # PRIVATE METHOS
   _getFileIndex: (file_to_search) ->
     i = 0
@@ -99,7 +106,7 @@ class __View.Column extends Monocle.View
     return -1
 
   _appendNavArticle: (file_data, index) ->
-    html = """<a href="#" class="active" data-index="file-#{index}">#{file_data.name}</a>"""
+    html = """<a href="#" class="active" data-index="file-#{index}" draggable>#{file_data.name}</a>"""
     @nav.append Monocle.Dom html
     article = document.createElement("article")
     article.setAttribute("data-index", "file-#{index}")
@@ -119,7 +126,7 @@ class __View.Column extends Monocle.View
     file_data.ace.setTheme "ace/theme/monokai"
     file_data.ace.setShowInvisibles true
     file_data.ace.setDisplayIndentGuides false
-    file_data.ace.setFontSize "12px"
+    file_data.ace.setFontSize "11px"
     file_data.ace.setPrintMarginColumn 80
     file_data.ace.setBehavioursEnabled true
     language = @EXTENSION[file_data.extension] or "text"

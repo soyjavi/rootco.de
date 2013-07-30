@@ -25,8 +25,8 @@ class ShortcutsCtrl extends Monocle.Controller
       _shortcut = false
       do event.preventDefault
       do @["_#{BINDINGS[key]}"]
-    else if _shortcut
-      console.error key
+    # else if _shortcut
+    #   console.error key
 
   # PRIVATE METHODS
   _column_1: -> __Controller.Columns.number 1
@@ -41,8 +41,8 @@ class ShortcutsCtrl extends Monocle.Controller
   _maximize: -> console.log "SHORTCUT: _maximize"
 
   _new: -> console.log "SHORTCUT: _new"
-  _open: -> console.log "SHORTCUT: _open"
-  _save: -> console.log "SHORTCUT: _save"
+  _open: -> do __Controller.Aside.import
+  _save: -> do __Controller.Columns.saveFile
 
   _isShortcut = (key) ->
     _shortcut = if key is 91 or key is 17 then true else false
