@@ -4,22 +4,16 @@ body > section
 
   &:not(.active)
     opacity: 0.6
-    & > header > button
-      &[data-action=remove_column]
-        visibility: hidden
 
   & > header
     & > button
       float: left
       margin: 0.6em
-      &[data-action=remove_column]
-        float: right
 
   & > article
     box-flex(1)
     padding: 1em
     font-family: "Monaco", "Courier New"
-    font-size: 11px !important
     font-weight: bold
     &.hidden
       display: none
